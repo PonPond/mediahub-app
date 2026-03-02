@@ -1,0 +1,758 @@
+openapi: 3.0.3
+info:
+  title: MediaHub API
+  version: 1.0.0
+  description: API documentation for MediaHub.
+servers:
+  - url: /
+tags:
+  - name: Health
+  - name: Auth
+  - name: Admin
+  - name: Media
+  - name: Reference
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login CMS user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /auth/project-token:
+    post:
+      tags: [Auth]
+      summary: Issue JWT using project credential
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectTokenRequest"
+      responses:
+        "200":
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /auth/users:
+    get:
+      tags: [Admin]
+      summary: List CMS users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserSummary"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+    post:
+      tags: [Admin]
+      summary: Create CMS user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSummary"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+
+  /auth/users/{id}:
+    put:
+      tags: [Admin]
+      summary: Update CMS user
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IDParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSummary"
+    delete:
+      tags: [Admin]
+      summary: Delete CMS user
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IDParam"
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/projects:
+    get:
+      tags: [Admin]
+      summary: List project credentials
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Project list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectSummary"
+    post:
+      tags: [Admin]
+      summary: Create project credential
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProjectRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateProjectResponse"
+
+  /auth/projects/{id}:
+    put:
+      tags: [Admin]
+      summary: Update project credential
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IDParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProjectRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectSummary"
+    delete:
+      tags: [Admin]
+      summary: Delete project credential
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IDParam"
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/projects/{id}/upload-logs:
+    get:
+      tags: [Admin]
+      summary: List recent upload activity for a project credential
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IDParam"
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Upload logs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProjectUploadLog"
+
+  /media:
+    get:
+      tags: [Media]
+      summary: List media files
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+        - in: query
+          name: pagination
+          schema: { type: string, enum: [offset, cursor], default: offset }
+        - in: query
+          name: cursor
+          schema: { type: string }
+        - in: query
+          name: type
+          schema: { type: string, enum: [image, video, audio, document, archive, other] }
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: uploaded_by
+          schema: { type: string }
+        - in: query
+          name: source_service
+          schema: { type: string }
+        - in: query
+          name: source_module
+          schema: { type: string }
+        - in: query
+          name: sort_by
+          schema: { type: string, enum: [created_at, size, file_name], default: created_at }
+        - in: query
+          name: sort_dir
+          schema: { type: string, enum: [asc, desc], default: desc }
+      responses:
+        "200":
+          description: Media list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaListResult"
+
+  /media/upload:
+    post:
+      tags: [Media]
+      summary: Upload media file
+      description: Upload as multipart/form-data with a `file` part.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: source_service
+          schema: { type: string }
+        - in: query
+          name: source_module
+          schema: { type: string }
+        - in: query
+          name: is_public
+          schema: { type: boolean, default: false }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                source_service:
+                  type: string
+                source_module:
+                  type: string
+                is_public:
+                  type: boolean
+      responses:
+        "201":
+          description: Uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaFile"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+
+  /media/filter-options:
+    get:
+      tags: [Media]
+      summary: Get filter dropdown options
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Filter options
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FilterOptions"
+
+  /media/{id}:
+    get:
+      tags: [Media]
+      summary: Get media by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IDParam"
+      responses:
+        "200":
+          description: Media file
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaFile"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+    delete:
+      tags: [Media]
+      summary: Delete media file
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IDParam"
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "409":
+          description: In use by references
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /media/{id}/usage:
+    get:
+      tags: [Reference]
+      summary: Get media usage references
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IDParam"
+      responses:
+        "200":
+          description: Usage
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsageResult"
+
+  /media/reference:
+    post:
+      tags: [Reference]
+      summary: Add media reference
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddReferenceInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+    delete:
+      tags: [Reference]
+      summary: Remove media reference
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RemoveReferenceInput"
+      responses:
+        "200":
+          description: Removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IDParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 8ebbd6a0-4f95-4f90-b316-04e5ad5f0ab4
+
+  responses:
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: invalid payload
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: deleted
+
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: admin
+        password:
+          type: string
+          example: admin123456
+
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          format: int64
+
+    ProjectTokenRequest:
+      type: object
+      required: [client_id, client_secret]
+      properties:
+        client_id:
+          type: string
+        client_secret:
+          type: string
+
+    CreateUserRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum: [admin, editor, viewer]
+          default: editor
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [admin, editor, viewer]
+        password:
+          type: string
+
+    UserSummary:
+      type: object
+      properties:
+        id: { type: string }
+        username: { type: string }
+        role: { type: string }
+        created_at:
+          type: string
+          format: date-time
+
+    ProjectUploadPolicy:
+      type: object
+      properties:
+        limits_mb:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+          example:
+            image: 10
+            video: 200
+            audio: 30
+            document: 20
+            archive: 50
+            other: 5
+
+    CreateProjectRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+          example: [media:read, media:write, reference:write]
+        upload_policy:
+          $ref: "#/components/schemas/ProjectUploadPolicy"
+
+    UpdateProjectRequest:
+      type: object
+      properties:
+        name: { type: string }
+        scopes:
+          type: array
+          items: { type: string }
+        upload_policy:
+          $ref: "#/components/schemas/ProjectUploadPolicy"
+        is_active:
+          type: boolean
+
+    ProjectSummary:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        client_id: { type: string }
+        scopes:
+          type: array
+          items: { type: string }
+        upload_policy:
+          $ref: "#/components/schemas/ProjectUploadPolicy"
+        is_active: { type: boolean }
+        created_at:
+          type: string
+          format: date-time
+
+    CreateProjectResponse:
+      allOf:
+        - $ref: "#/components/schemas/ProjectSummary"
+        - type: object
+          properties:
+            client_secret:
+              type: string
+
+    MediaFile:
+      type: object
+      properties:
+        id: { type: string }
+        bucket: { type: string }
+        object_key: { type: string }
+        file_name: { type: string }
+        mime_type: { type: string }
+        size:
+          type: integer
+          format: int64
+        checksum: { type: string }
+        source_service: { type: string, nullable: true }
+        source_module: { type: string, nullable: true }
+        uploaded_by: { type: string }
+        is_public: { type: boolean }
+        ref_count: { type: integer }
+        url: { type: string, nullable: true }
+        created_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    MediaListResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MediaFile"
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+        total_pages: { type: integer }
+        has_more: { type: boolean }
+        next_cursor: { type: string, nullable: true }
+
+    FilterOptions:
+      type: object
+      properties:
+        source_services:
+          type: array
+          items: { type: string }
+        source_modules:
+          type: array
+          items: { type: string }
+
+    AddReferenceInput:
+      type: object
+      required: [media_id, ref_service, ref_table, ref_id, ref_field]
+      properties:
+        media_id: { type: string, format: uuid }
+        ref_service: { type: string }
+        ref_table: { type: string }
+        ref_id: { type: string }
+        ref_field: { type: string }
+
+    RemoveReferenceInput:
+      $ref: "#/components/schemas/AddReferenceInput"
+
+    MediaReference:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        media_id: { type: string }
+        ref_service: { type: string }
+        ref_table: { type: string }
+        ref_id: { type: string }
+        ref_field: { type: string }
+        created_at:
+          type: string
+          format: date-time
+
+    UsageResult:
+      type: object
+      properties:
+        media_id: { type: string }
+        ref_count: { type: integer }
+        references:
+          type: array
+          items:
+            $ref: "#/components/schemas/MediaReference"
+
+    ProjectUploadLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        project_id:
+          type: string
+        media_id:
+          type: string
+          nullable: true
+        file_name:
+          type: string
+        mime_type:
+          type: string
+        size:
+          type: integer
+          format: int64
+        source_service:
+          type: string
+          nullable: true
+        source_module:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [success, failed]
+        error_message:
+          type: string
+        uploaded_by:
+          type: string
+        created_at:
+          type: string
+          format: date-time

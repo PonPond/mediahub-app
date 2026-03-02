@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 209 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 94%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 209 100% 50%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 220 26% 7%;
+    --foreground: 210 20% 94%;
+    --card: 222 24% 10%;
+    --card-foreground: 210 20% 94%;
+    --popover: 223 23% 12%;
+    --popover-foreground: 210 20% 94%;
+    --primary: 209 100% 62%;
+    --primary-foreground: 222 45% 10%;
+    --secondary: 222 20% 16%;
+    --secondary-foreground: 210 20% 92%;
+    --muted: 223 16% 15%;
+    --muted-foreground: 216 13% 66%;
+    --accent: 222 20% 19%;
+    --accent-foreground: 210 20% 92%;
+    --destructive: 0 72% 56%;
+    --destructive-foreground: 210 20% 95%;
+    --border: 220 17% 22%;
+    --input: 220 17% 24%;
+    --ring: 209 100% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(circle at 15% -10%, rgba(56, 189, 248, 0.08), transparent 35%),
+      radial-gradient(circle at 85% -20%, rgba(125, 211, 252, 0.06), transparent 30%);
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(circle at 15% -10%, rgba(56, 189, 248, 0.14), transparent 35%),
+      radial-gradient(circle at 85% -20%, rgba(125, 211, 252, 0.1), transparent 30%);
+  }
+}
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--background));
+  }
+}
