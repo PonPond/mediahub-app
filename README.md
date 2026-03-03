@@ -28,7 +28,7 @@
 | 🔗 **Reference Tracking** | นับการใช้งานไฟล์ข้ามระบบ ป้องกันการลบไฟล์ที่ยังใช้งานอยู่ |
 | 🔐 **Signed URLs** | URL ชั่วคราวสำหรับไฟล์ private (หมดอายุอัตโนมัติ) |
 | 🧹 **Auto Cleanup** | ลบไฟล์ที่ไม่มีการอ้างอิงอัตโนมัติทุก 1 ชั่วโมง |
-| ⚡ **Rate Limiting** | จำกัด 100 req/min ต่อ IP ผ่าน Redis |
+| ⚡ **Rate Limiting** | จำกัด 100 req/min ต่อ IP ผ่าน Nginx |
 | 👤 **JWT Auth** | HS256 authentication สำหรับผู้ใช้ และ Client Credentials สำหรับ service |
 | 📋 **Upload Audit Logs** | บันทึก log การอัพโหลดของแต่ละ API Project |
 | 📄 **Swagger UI** | Interactive API documentation พร้อมใช้งาน |
@@ -40,20 +40,13 @@
 ### Media Library — หน้าหลักแสดง Grid ของไฟล์ทั้งหมด
 ![Media Library](docs/screenshots/media-library.png)
 
-### Upload — อัพโหลดไฟล์พร้อม Progress Bar
-![File Upload](docs/screenshots/upload.png)
+### Auth & API Project Management — จัดการ API Projects และ Credentials
+![Auth Admin Panel](docs/screenshots/auth-api.png)
 
-### Preview Modal — ดูตัวอย่างรูปภาพ/วิดีโอแบบ Inline
-![Preview Modal](docs/screenshots/preview-modal.png)
-
-### Filter & Search — กรองตามประเภทไฟล์และค้นหาตามชื่อ
-![Filter and Search](docs/screenshots/filter-search.png)
 
 ### Swagger UI — Interactive API Documentation
 ![Swagger UI](docs/screenshots/swagger-ui.png)
 
-### Auth & API Project Management — จัดการ API Projects และ Credentials
-![Auth Admin Panel](docs/screenshots/auth-admin.png)
 
 ---
 
@@ -79,7 +72,6 @@ graph TB
         subgraph Storage["Storage Layer"]
             PG[("🐘 PostgreSQL 16\n:5432\nMedia Metadata · Auth · References")]
             MinIO[("🪣 MinIO\n:9000 API | :9001 Console\nObject Storage · S3-Compatible")]
-            Redis[("🟥 Redis\n:6379\nRate Limiting")]
         end
     end
 
@@ -88,7 +80,6 @@ graph TB
     Nginx -->|"/media/**"| Go
     Go --> PG
     Go -->|"Stream Upload/Download"| MinIO
-    Go -->|"Rate Limit Window"| Redis
 ```
 
 ### Request Flow: File Upload
@@ -213,14 +204,12 @@ graph LR
     subgraph External["🔌 External"]
         ST["🪣 Storage\n(MinIO)"]
         DB[("🐘 PostgreSQL")]
-        Cache[("🟥 Redis")]
     end
 
     Handler --> Service
     Service --> Repository
     Service --> ST
     Repository --> DB
-    Handler -.->|"rate limit"| Cache
 ```
 
 ---
@@ -471,12 +460,6 @@ GET /health
 |----------|---------|-------------|
 | `UPLOAD_MAX_SIZE_BYTES` | `104857600` | ขนาดไฟล์สูงสุด (100 MB) |
 
-**Redis**
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `REDIS_ENABLED` | `true` | เปิด/ปิด rate limiting |
-| `REDIS_ADDR` | `localhost:6379` | Redis address |
-
 ---
 
 ## 🔒 Security
@@ -505,7 +488,7 @@ graph LR
 - **File size enforcement** ทั้ง nginx และ application layer
 - **`ref_count > 0`** บล็อคการลบไฟล์ที่ยังถูกใช้งาน
 - **Signed URL expiration** สำหรับ private files
-- **Per-IP rate limiting** ผ่าน Redis
+- **Per-IP rate limiting** ผ่าน Nginx
 - **Non-root Docker containers**
 - **Security headers** ผ่าน nginx
 
@@ -517,7 +500,7 @@ graph LR
 
 ```bash
 # Start dependencies
-docker compose up -d postgres minio redis
+docker compose up -d postgres minio
 
 # Run Go API with live reload
 cd backend
