@@ -597,7 +597,7 @@ Media/
 
 ## 📝 License
 
-MIT License — see [LICENSE](LICENSE) for details.
+Non-Commercial Open Source License — see [LICENSE](LICENSE) for details.
 
 ---
 

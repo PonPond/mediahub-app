@@ -1,0 +1,78 @@
+Copyright (c) 2026 Pongsathon
+
+Non-Commercial Open Source License
+ใบอนุญาตโอเพนซอร์สแบบไม่ใช้เพื่อการพาณิชย์
+─────────────────────────────────────────────────────────────────────────────
+
+EN: Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to use, copy, modify, merge, publish, and distribute the Software, subject
+to the following conditions:
+
+TH: อนุญาตให้บุคคลใดก็ตามที่ได้รับสำเนาของซอฟต์แวร์นี้และไฟล์เอกสาร
+ที่เกี่ยวข้อง ("ซอฟต์แวร์") ใช้งาน คัดลอก แก้ไข รวม เผยแพร่ และแจกจ่าย
+ซอฟต์แวร์ได้โดยไม่มีค่าใช้จ่าย ภายใต้เงื่อนไขต่อไปนี้:
+
+─────────────────────────────────────────────────────────────────────────────
+CONDITIONS / เงื่อนไข
+─────────────────────────────────────────────────────────────────────────────
+
+1. ATTRIBUTION / การระบุแหล่งที่มา
+
+   EN: The above copyright notice and this permission notice shall be
+   included in all copies or substantial portions of the Software.
+
+   TH: ต้องระบุประกาศลิขสิทธิ์และใบอนุญาตนี้ไว้ในทุกสำเนาหรือส่วนสำคัญ
+   ของซอฟต์แวร์
+
+2. NON-COMMERCIAL USE ONLY / ห้ามใช้เพื่อการพาณิชย์
+
+   EN: The Software may not be used for commercial purposes. This includes,
+   but is not limited to:
+     - Selling the Software or any derivative work
+     - Offering the Software as a paid product or service
+     - Using the Software as part of a revenue-generating product or service
+     - Licensing the Software to third parties for a fee
+
+   TH: ห้ามนำซอฟต์แวร์นี้ไปใช้เพื่อวัตถุประสงค์ทางการพาณิชย์ ซึ่งรวมถึง
+   แต่ไม่จำกัดเพียง:
+     - การขายซอฟต์แวร์หรืองานดัดแปลง
+     - การนำเสนอซอฟต์แวร์เป็นผลิตภัณฑ์หรือบริการที่มีค่าใช้จ่าย
+     - การใช้ซอฟต์แวร์เป็นส่วนหนึ่งของผลิตภัณฑ์หรือบริการที่สร้างรายได้
+     - การให้สิทธิ์ใช้งานซอฟต์แวร์แก่บุคคลที่สามเพื่อรับค่าตอบแทน
+
+─────────────────────────────────────────────────────────────────────────────
+WHAT YOU CAN DO / สิ่งที่อนุญาต
+─────────────────────────────────────────────────────────────────────────────
+
+  ✓  EN: Use for personal projects         TH: ใช้เพื่อโปรเจคส่วนตัว
+  ✓  EN: Use for educational purposes      TH: ใช้เพื่อการศึกษา
+  ✓  EN: Modify and adapt the code        TH: แก้ไขและดัดแปลงโค้ด
+  ✓  EN: Share and redistribute freely    TH: แชร์และเผยแพร่ได้อย่างอิสระ
+  ✓  EN: Fork and build upon this work    TH: Fork และพัฒนาต่อยอด
+  ✓  EN: Use internally within a company  TH: ใช้ภายในองค์กรโดยไม่คิดเงิน
+
+─────────────────────────────────────────────────────────────────────────────
+WHAT YOU CANNOT DO / สิ่งที่ไม่อนุญาต
+─────────────────────────────────────────────────────────────────────────────
+
+  ✗  EN: Sell the software or derivatives  TH: ขายซอฟต์แวร์หรืองานดัดแปลง
+  ✗  EN: Charge users to access it         TH: เก็บเงินผู้ใช้เพื่อเข้าถึง
+  ✗  EN: Include in a commercial product   TH: รวมไว้ในผลิตภัณฑ์เชิงพาณิชย์
+  ✗  EN: Offer as a paid SaaS/service      TH: นำไปเปิดให้บริการเก็บเงิน
+
+─────────────────────────────────────────────────────────────────────────────
+DISCLAIMER / ข้อจำกัดความรับผิดชอบ
+─────────────────────────────────────────────────────────────────────────────
+
+EN: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+
+TH: ซอฟต์แวร์นี้ให้บริการ "ตามสภาพที่เป็น" โดยไม่มีการรับประกันใดๆ
+ทั้งโดยชัดแจ้งหรือโดยนัย ผู้เขียนหรือผู้ถือลิขสิทธิ์ไม่มีความรับผิดชอบ
+ต่อความเสียหายใดๆ ที่เกิดจากการใช้ซอฟต์แวร์นี้
