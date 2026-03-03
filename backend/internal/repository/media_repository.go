@@ -404,13 +404,13 @@ func (r *mediaRepository) SoftDelete(ctx context.Context, id string) error {
 	return nil
 }
 
-// FindStaleOrphans returns media files with ref_count = 0 older than olderThan.
+// FindStaleOrphans returns media files with ref_count = 0 and is_public = false older than olderThan.
 func (r *mediaRepository) FindStaleOrphans(ctx context.Context, olderThan time.Duration) ([]*model.MediaFile, error) {
 	cutoff := time.Now().Add(-olderThan)
 	var items []*model.MediaFile
 	err := r.db.SelectContext(ctx, &items,
 		`SELECT * FROM media_files
-		 WHERE ref_count = 0 AND created_at < $1 AND deleted_at IS NULL`,
+		 WHERE ref_count = 0 AND is_public = false AND created_at < $1 AND deleted_at IS NULL`,
 		cutoff)
 	if err != nil {
 		return nil, fmt.Errorf("media repo find orphans: %w", err)
