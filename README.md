@@ -9,9 +9,9 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
 [![MinIO](https://img.shields.io/badge/MinIO-S3--Compatible-C72E49?style=flat-square&logo=minio)](https://min.io/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/License-Non--Commercial-orange?style=flat-square)](LICENSE)
 
-ระบบจัดการและจัดเก็บไฟล์มีเดีย รองรับ S3-compatible object storage พร้อม Web UI สำหรับการจัดการไฟล์ รูปภาพ วิดีโอ และเอกสารในองค์กร
+Centralized media storage service สำหรับสถาปัตยกรรม microservices — แต่ละ service ยิง API มาเก็บไฟล์ที่ MediaHub โดยไม่ต้องจัดการ object storage เอง รองรับ S3-compatible backend, deduplication, reference tracking และ signed URL สำหรับ private files
 
 [Quick Start](#-quick-start) · [API Reference](#-api-reference) · [Architecture](#-architecture) · [Configuration](#-configuration)
 
